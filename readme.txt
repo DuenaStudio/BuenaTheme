@@ -25,3 +25,11 @@ http://www.wptheming.com
 
 Other icons and images are created by Duena Studio and licensed under GPL.
 --------------------------------------------------------------------------------
+
+
+--------------------------------------------------------------------------------
+ Changelog
+--------------------------------------------------------------------------------
+
+v.1.0.2
+- Fix: fixed 'href' attribute in bueno_sidebar_socials();

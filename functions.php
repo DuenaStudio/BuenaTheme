@@ -417,42 +417,42 @@ function bueno_sidebar_socials() {
 		<?php 
 			if ( '' != of_get_option( 'g_twitter_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_twitter_url' ) ); ?>"><i class="icon-twitter"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_twitter_url' ) ); ?>"><i class="icon-twitter"></i></a>
 		<?php
 			}
 		?>
 		<?php 
 			if ( '' != of_get_option( 'g_facebook_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_facebook_url' ) ); ?>"><i class="icon-facebook"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_facebook_url' ) ); ?>"><i class="icon-facebook"></i></a>
 		<?php
 			}
 		?>
 		<?php 
 			if ( '' != of_get_option( 'g_linkedin_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_linkedin_url' ) ); ?>"><i class="icon-linkedin"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_linkedin_url' ) ); ?>"><i class="icon-linkedin"></i></a>
 		<?php
 			}
 		?>
 		<?php 
 			if ( '' != of_get_option( 'g_google_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_google_url' ) ); ?>"><i class="icon-google-plus"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_google_url' ) ); ?>"><i class="icon-google-plus"></i></a>
 		<?php
 			}
 		?>
 		<?php 
 			if ( '' != of_get_option( 'g_pinterest_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_pinterest_url' ) ); ?>"><i class="icon-pinterest"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_pinterest_url' ) ); ?>"><i class="icon-pinterest"></i></a>
 		<?php
 			}
 		?>
 		<?php 
 			if ( '' != of_get_option( 'g_rss_url' ) ) {
 		?>
-			<a hhref="<?php echo esc_url( of_get_option( 'g_rss_url' ) ); ?>"><i class="icon-rss"></i></a>
+			<a href="<?php echo esc_url( of_get_option( 'g_rss_url' ) ); ?>"><i class="icon-rss"></i></a>
 		<?php
 			}
 		?>
