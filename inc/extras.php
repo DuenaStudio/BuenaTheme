@@ -249,10 +249,10 @@ function bueno_portfolio_format($args) {
 
 add_filter( 'bueno_portfolio_args', 'bueno_portfolio_cat', 10, 1 );
 function bueno_portfolio_cat($args) {
-	$portfolio_cat = of_get_option('g_portfolio_cat');
-	$portfolio_cat = isset( $portfolio_cat ) ? $portfolio_cat : "";
-	if ( '' != $portfolio_cat ) {
-		$args['category_name'] = esc_attr($portfolio_cat);
+	$portfolio_cat = of_get_option('g_portfolio_cat', 'from_all');
+	$portfolio_cat = isset( $portfolio_cat ) ? $portfolio_cat : "from_all";
+	if ( 'from_all' != $portfolio_cat ) {
+		$args['cat'] = esc_attr($portfolio_cat);
 	}
 	return $args;
 }
@@ -260,14 +260,21 @@ function bueno_portfolio_cat($args) {
 function bueno_portfolio_show() {
 	wp_reset_query();
 	global $post;
-	$post_num = get_option( 'posts_per_page' );
+	$preview_link = of_get_option( 'g_portfolio_preview_btn', 'false' );
+	$post_num = of_get_option( 'g_portfolio_per_page', 8 );
+	$post_num = intval($post_num);
+	if ( '' == $post_num || 0 == $post_num ) {
+		$post_num = 8;
+	}
 	$default_args = array(
 		'posts_per_page' => $post_num,
+		'ignore_sticky_posts' => 1
 	);
 	$args = apply_filters( 'bueno_portfolio_args', $default_args );
 	
 	$count_portf = 0;
 	$portf_query = new WP_Query( $args );
+	$bueno_modals = '';
 	if ( $portf_query->have_posts() ):
 		while ( $portf_query->have_posts() ) :
 			$portf_query->the_post();
@@ -286,6 +293,22 @@ function bueno_portfolio_show() {
 							<span class="view_link"><?php _e('View', 'bueno'); ?></span>
 						</div>
 						</a>
+						<?php
+							if ( 'true' == $preview_link ) {
+							?>
+							<a href="#preview-<?php the_id(); ?>" class="preview_link" data-toggle="modal"><?php _e('Preview', 'bueno'); ?></a>
+							<?php
+							$bueno_modals .= '<div id="preview-' . get_the_id() . '" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="preview-label-' . get_the_id() . '" aria-hidden="true">
+							    <div class="modal-header">
+							    	<h3 id="preview-label-' . get_the_id() . '">' . get_the_title() . '</h3>
+							    </div>
+							    <div class="modal-body">' . apply_filters( 'the_excerpt', bueno_string_limit_words( strip_tags(get_the_content()),100 ) ) . '</div>
+							    <div class="modal-footer">
+								    <a href="#" class="btn" data-dismiss="modal" >' . __( 'Close', 'bueno' ) . '</a>
+								    <a href="' . get_permalink() . '" class="btn btn-primary">' . __( 'Read More', 'bueno' ) . '</a>
+							    </div>
+						    </div>';
+							} ?>
 					</div>
 				</div>
 			<?php
@@ -299,4 +322,19 @@ function bueno_portfolio_show() {
 			}
 		endwhile;
 	endif;
+	if ( 'true' == $preview_link ) {
+		$GLOBALS['bueno_portfolio_modals'] = $bueno_modals;
+		add_action( 'bueno_portfolio_after_content', 'bueno_add_portfolio_modals' );
+	}
+	wp_reset_postdata();
 }
+
+function bueno_add_portfolio_modals() {
+	global $bueno_portfolio_modals;
+
+	if ( isset($bueno_portfolio_modals) ) {
+		echo $bueno_portfolio_modals;
+	}
+}
+
+?>

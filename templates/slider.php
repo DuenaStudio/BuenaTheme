@@ -16,9 +16,12 @@
         }
         $bueno_sl_args = array(
             'posts_per_page' => $bueno_sl_num,
-            'category_name' => esc_attr(of_get_option('sl_category')),
             'ignore_sticky_posts' => 1
         );
+        $bueno_sl_cat = of_get_option('sl_category', 'from_all');
+        if ( 'from_all' != $bueno_sl_cat ) {
+            $bueno_sl_args['cat'] = $bueno_sl_cat;
+        }
         $bueno_slider_query = new WP_Query( $bueno_sl_args );
         $bueno_checkthumb = 0;
         while ( $bueno_slider_query->have_posts() ) : $bueno_slider_query->the_post();

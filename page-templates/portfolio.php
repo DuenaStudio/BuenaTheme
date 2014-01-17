@@ -31,4 +31,6 @@ get_header(); ?>
 		</div><!-- #content -->
 	</div><!-- #primary -->
 
+<?php do_action( 'bueno_portfolio_after_content' ); ?>
+
 <?php get_footer(); ?>

@@ -169,6 +169,8 @@ if(!function_exists('optionsframework_options')) {
 				$options_categories[$category->cat_ID] = $category->cat_name;
 		}
 		
+		$all_cats_array = array('from_all' => __( 'Select from all', 'duena' ) ) + $options_categories;
+		
 		// Pull all the pages into an array
 		$options_pages = array();  
 		$options_pages_obj = get_pages('sort_column=post_parent,menu_order');
@@ -215,21 +217,6 @@ if(!function_exists('optionsframework_options')) {
 							"type" => "radio",
 							"std" => "yes",
 							"options" => $g_breadcrumb);
-
-
-		$options['g_portfolio_format'] = array( "name" => __( "Portfolio items are selected from:", "bueno" ),
-							"desc" => __( "If 'All posts' - items on portfolio page template are selected from all posts with featured image, If 'Only Image Post Format' - items on portfolio page template are selected from posts with Image post format with featured image", "bueno" ),
-							"id" => "g_portfolio_format",
-							"type" => "select",
-							"std" => "all",
-							"class" => "small", //mini, tiny, small
-							"options" => $portf_format_array);
-
-		$options['g_portfolio_cat'] = array( "name" => __( "Category slug for portfolio page", "bueno" ),
-							"desc" => __( "Enter category slug, from which you like to fill portfolio page", "bueno" ),
-							"id" => "g_portfolio_cat",
-							"type" => "text",
-							"std" => "");
 
 		$options['g_sidebar_socials_title'] = array( "name" => __( "Sidebar socials block title", "bueno" ),
 							"desc" => __( "Enter your sidebar socials block title (leave empty for display solcial block without title)", "bueno" ),
@@ -396,11 +383,11 @@ if(!function_exists('optionsframework_options')) {
                             "options" => $sl_num_array);
 
 		$options['sl_category'] = array( "name" => __( "Which category to pull from?", "bueno" ),
-                            "desc" => __( "Enter the slug of the category you'd like to pull slides from. Leave blank if you'd like to pull from all categories.", "bueno" ),
+                            "desc" => __( "Select the category you'd like to pull slides from.", "bueno" ),
                             "id" => "sl_category",
                             "std" => "",
-                            "type" => "text",
-                            "class" => "tiny");
+                            "type" => "select",
+                            "options" => $all_cats_array);
 
 		$options['sl_as_link'] = array( "name" => __( "Slide as link to the post", "bueno" ),
                             "desc" => __( "Add/remove permalink to slides", "bueno" ),
@@ -547,7 +534,38 @@ if(!function_exists('optionsframework_options')) {
 							"std" => __( 'Related posts', 'bueno' ),
 							"type" => "text");
 		
-		
+
+		$options[] = array( "name" => __( "Portfolio", "bueno" ),
+							"type" => "heading");
+
+		$options['g_portfolio_per_page'] = array( "name" => __( "Items per page", "bueno" ),
+							"desc" => __( "Enter number items per page on portfolio pages", "bueno" ),
+							"id" => "g_portfolio_per_page",
+							"type" => "text",
+							"std" => "8");
+
+		$options['g_portfolio_format'] = array( "name" => __( "Portfolio items are selected from:", "bueno" ),
+							"desc" => __( "If 'All posts' - items on portfolio page template are selected from all posts with featured image, If 'Only Image Post Format' - items on portfolio page template are selected from posts with Image post format with featured image", "bueno" ),
+							"id" => "g_portfolio_format",
+							"type" => "select",
+							"std" => "all",
+							"class" => "small", //mini, tiny, small
+							"options" => $portf_format_array);
+
+		$options['g_portfolio_cat'] = array( "name" => __( "Select category for portfolio page", "bueno" ),
+							"desc" => __( "Select category to pull portfolio page from", "bueno" ),
+							"id" => "g_portfolio_cat",
+							"type" => "select",
+							"std" => "",
+							"options" => $all_cats_array);
+
+		$options['g_portfolio_preview_btn'] = array( "name" => __( "Preview button", "bueno" ),
+							"desc" => __( "Add preview button to portfolio items", "bueno" ),
+							"id" => "g_portfolio_preview_btn",
+							"std" => "false",
+							"type" => "radio",
+							"options" => $post_opt_array);
+
 		$options[] = array( "name" => __( "Footer", "bueno" ),
 							"type" => "heading");
 		
@@ -693,34 +711,7 @@ if(!function_exists('bueno_register')) {
 				'type' => $options['g_breadcrumbs_id']['type'],
 				'choices' => $options['g_breadcrumbs_id']['options'],
 				'priority' => 15
-		) );
-
-		/* Portfolio Format */
-		$wp_customize->add_setting( 'bueno[g_portfolio_format]', array(
-				'default' => $options['g_portfolio_format']['std'],
-				'type' => 'option'
-		) );
-		$wp_customize->add_control( 'bueno_g_portfolio_format', array(
-				'label' => $options['g_portfolio_format']['name'],
-				'section' => 'bueno_header',
-				'settings' => 'bueno[g_portfolio_format]',
-				'type' => $options['g_portfolio_format']['type'],
-				'choices' => $options['g_portfolio_format']['options'],
-				'priority' => 16
-		) );
-
-		/* Portfolio Category */
-		$wp_customize->add_setting( 'bueno[g_portfolio_cat]', array(
-				'default' => $options['g_portfolio_cat']['std'],
-				'type' => 'option'
-		) );
-		$wp_customize->add_control( 'bueno_g_portfolio_cat', array(
-				'label' => $options['g_portfolio_cat']['name'],
-				'section' => 'bueno_header',
-				'settings' => 'bueno[g_portfolio_cat]',
-				'type' => $options['g_portfolio_cat']['type'],
-				'priority' => 17
-		) );		
+		) );	
 
 		/* Sidebar social - title */
 		$wp_customize->add_setting( 'bueno[g_sidebar_socials_title]', array(
@@ -1339,7 +1330,68 @@ if(!function_exists('bueno_register')) {
 				'priority' => 23
 		) );
 		
+		/*-----------------------------------------------------------------------------------*/
+		/*	Portfolio
+		/*-----------------------------------------------------------------------------------*/
+		$wp_customize->add_section( 'bueno_portfolio', array(
+			'title' => __( 'Portfolio', 'bueno' ),
+			'priority' => 205
+		));
 		
+		/* Portfolio per page */
+		$wp_customize->add_setting( 'bueno[g_portfolio_per_page]', array(
+				'default' => $options['g_portfolio_per_page']['std'],
+				'type' => 'option'
+		) );
+		$wp_customize->add_control( 'g_portfolio_per_page', array(
+				'label' => $options['g_portfolio_per_page']['name'],
+				'section' => 'bueno_portfolio',
+				'settings' => 'bueno[g_portfolio_per_page]',
+				'type' => $options['g_portfolio_per_page']['type'],
+				'priority' => 11
+		) );
+
+		/* Portfolio Format */
+		$wp_customize->add_setting( 'bueno[g_portfolio_format]', array(
+				'default' => $options['g_portfolio_format']['std'],
+				'type' => 'option'
+		) );
+		$wp_customize->add_control( 'bueno_g_portfolio_format', array(
+				'label' => $options['g_portfolio_format']['name'],
+				'section' => 'bueno_portfolio',
+				'settings' => 'bueno[g_portfolio_format]',
+				'type' => $options['g_portfolio_format']['type'],
+				'choices' => $options['g_portfolio_format']['options'],
+				'priority' => 12
+		) );
+
+		/* Portfolio Category */
+		$wp_customize->add_setting( 'bueno[g_portfolio_cat]', array(
+				'default' => $options['g_portfolio_cat']['std'],
+				'type' => 'option'
+		) );
+		$wp_customize->add_control( 'bueno_g_portfolio_cat', array(
+				'label' => $options['g_portfolio_cat']['name'],
+				'section' => 'bueno_portfolio',
+				'settings' => 'bueno[g_portfolio_cat]',
+				'type' => $options['g_portfolio_cat']['type'],
+				'choices' => $options['g_portfolio_cat']['options'],
+				'priority' => 13
+		) );
+
+		/* Portfolio preview button */
+		$wp_customize->add_setting( 'bueno[g_portfolio_preview_btn]', array(
+				'default' => $options['g_portfolio_preview_btn']['std'],
+				'type' => 'option'
+		) );
+		$wp_customize->add_control( 'g_portfolio_preview_btn', array(
+				'label' => $options['g_portfolio_preview_btn']['name'],
+				'section' => 'bueno_portfolio',
+				'settings' => 'bueno[g_portfolio_preview_btn]',
+				'type' => $options['g_portfolio_preview_btn']['type'],
+				'choices' => $options['g_portfolio_preview_btn']['options'],
+				'priority' => 14
+		) );	
 		
 		/*-----------------------------------------------------------------------------------*/
 		/*	Footer
@@ -1347,7 +1399,7 @@ if(!function_exists('bueno_register')) {
 		
 		$wp_customize->add_section( 'bueno_footer', array(
 			'title' => __( 'Footer', 'bueno' ),
-			'priority' => 205
+			'priority' => 206
 		) );
 			
 		/* Footer Copyright Text */

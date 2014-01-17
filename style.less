@@ -1,10 +1,10 @@
 /*
 Theme Name: Bueno
-Theme URI: 
+Theme URI: http://www.cherryframework.com/free-themes/bueno-free-wordpress-theme/
 Author: Duena Studio
 Author URI: http://profiles.wordpress.org/duena_studio
 Description: Bueno is a WordPress theme designed supremely for car blogs. Daredevils crazy about automobiles, driving, speed, tuning and the like will appreciate its dark design and nice visual effects. Needless to say how many opportunities WordPress gives to developers and website owners. The flexibility of the CMS allows making changes until your website acquires its unique appearance. You can replace slider images with your own, play with colors, texts, modify backgrounds, do whatever you need to reach the perfect feel and style, rendering your ideas and personal views. The template embraces the essence of current web trends whilst maintaining functional edge. Let's make a brief overview of its major features. Blog posts are arranged in two column structure, which makes them easy for scanning and creates accurate hierarchy on the page. Search bars are placed on top and in the bottom of the web page. This way their chances to be easily found by the users are doubled and the visitors can start their search immediately without losing any precious moment. Navigation is well considered. Main menu has drop down option. The rest of navigation links are in the right sidebar. They are separated by subtitles to improve readability. Blue buttons, text and elements stand out against the black background. This technique provides clear call-to-actions and guides user's eyes through the page. Back to top arrow in the right bottom corner of the page instantaneously lifts the visitor up without any additional scrolling. Go on, this is an excellent design to use!
-Version: 1.0.2
+Version: 1.1.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Tags: black, one-column, two-columns, right-sidebar, flexible-width, custom-background, custom-menu, editor-style, featured-images, full-width-template, post-formats, theme-options, sticky-post, translation-ready
@@ -1818,12 +1818,11 @@ a {
 .page_nav_wrap .post_nav ul li:before {
   display: none;
 }
-.page_nav_wrap .post_nav ul li a, .post_nav .more_link a {
+.page_nav_wrap .post_nav ul li .page-numbers, .post_nav .more_link a {
   display: inline-block;
   box-shadow: 0 1px 2px rgba(255, 255, 255, 0.3) inset;
   .buttonBackground(@btnPrimaryBackground, @btnPrimaryBackgroundHighlight, #fff, none);
   border: 1px solid @btnPrimaryBackgroundHighlight;
-  cursor: pointer;
   display: inline-block;
   font-size: 14px;
   font-weight: bold;
@@ -1848,14 +1847,14 @@ a {
   border: 1px solid @btnBackgroundHighlight;
   text-decoration: none;
 }
-.page_nav_wrap .post_nav ul li.active a {
+.post_nav ul li .page-numbers.dots {
+  background: none !important;
+  border: none;
+  box-shadow: none;
+}
+.page_nav_wrap .post_nav ul li .current {
   .buttonBackground(@btnBackground, @btnBackgroundHighlight, @btnPrimaryBackground, none);
   border: 1px solid @btnBackgroundHighlight;
-}
-.page_nav_wrap .post_nav span {
-  display: inline-block;
-  vertical-align: top;
-  margin: 0 4px 0 0;
 }
 
 .single-post-nav {
@@ -2047,7 +2046,22 @@ a {
       }
     }
   }
-
+  .preview_link {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    text-decoration: none;
+    color: #fff;
+    background: @linkColor;
+    text-align: center;
+    padding: 5px;
+    height: 0;
+    .box-sizing(border-box);
+    overflow: hidden;
+    .opacity(0);
+    .transition(all 300ms linear);
+  }
   &:hover {
     margin-bottom: 10px;
     h5 {
@@ -2063,10 +2077,18 @@ a {
     .view_link_wrapper {
       .view_link {
         opacity: 1;
-        margin: 0;
+        margin: -10px 0 0 0;
         &:hover {
           color:@linkColor;
         }
+      }
+    }
+    .preview_link {
+      height: 30px;
+      .opacity(100);
+      &:hover {
+        background: #fff;
+        color: @linkColor;
       }
     }
   }

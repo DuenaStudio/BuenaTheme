@@ -129,6 +129,7 @@ function bueno_setup() {
 	if ( function_exists( 'add_theme_support' ) ) { // Added in 2.9
 		add_theme_support( 'post-thumbnails' );
 		add_image_size( 'slider-post-thumbnail', 770, 360, true ); // Slider Thumbnail
+		add_image_size( 'fullwidth-post-thumbnail', 1170, 560, true ); // Fullwidth thumbnail
 		add_image_size( 'large-thumb', 762, 360, true ); // Large Thumbnail for one column output
 		add_image_size( 'featured-thumb', 362, 172, true ); // Featured Thumbnail for two column output
 		add_image_size( 'related-thumb', 160, 160, true ); // Realted Post Image output
@@ -463,45 +464,54 @@ function bueno_sidebar_socials() {
 
 
 /*-----------------------------------------------------------------------------------*/
-/*	Pagination
+/*	Pagination (based on Twenty Fourteen pagination function)
 /*-----------------------------------------------------------------------------------*/
-function bueno_pagination($pages = '', $range = 1)
-{ 
-     $showitems = ($range * 2)+2; 
- 
-     global $paged;
-     if(empty($paged)) $paged = 1;
- 
-     if($pages == '')
-     {
-         global $wp_query;
-         $pages = $wp_query->max_num_pages;
-         if(!$pages)
-         {
-             $pages = 1;
-         }
-     }  
-     if(1 != $pages)
-     {
+function bueno_pagination() { 
 
-     	echo "<div class='page_nav_wrap'>";
-         echo "<div class=\"post_nav\">";
-         if($paged > 2 && $paged > $range+1 && $showitems < $pages) echo "<span class='first more_link'><a href='".get_pagenum_link(1)."'>First</a></span>";
-         if($paged > 1 && $showitems < $pages) echo "<span class='prev more_link'><a href='".get_pagenum_link($paged - 1)."'>Prev</a></span>";
- 		 echo "<ul>";
-         for ($i=1; $i <= $pages; $i++)
-         {
-             if (1 != $pages &&( !($i >= $paged+$range+2 || $i <= $paged-$range-2) || $pages <= $showitems ))
-             {
-                 echo ($paged == $i)? "<li class=\"active\"><a href=''>".$i."</a></li>":"<li><a href='".get_pagenum_link($i)."' class=\"inactive\">".$i."</a></li>";
-             }
-         }
- 		echo "</ul>";
-         if ($paged < $pages && $showitems < $pages) echo "<span class='next more_link'><a href=\"".get_pagenum_link($paged + 1)."\">Next</a></span>"; 
-         if ($paged < $pages-1 &&  $paged+$range-1 < $pages && $showitems < $pages) echo "<span class='last more_link'><a href='".get_pagenum_link($pages)."'>Last</a></span>";
-         echo "</div>\n";
-        echo "</div>\n";
-     }
+	global $wp_query, $wp_rewrite;
+    
+	if ( $wp_query->max_num_pages < 2 ) {
+		return;
+	}
+
+	$paged        = get_query_var( 'paged' ) ? intval( get_query_var( 'paged' ) ) : 1;
+	$pagenum_link = html_entity_decode( get_pagenum_link() );
+	$query_args   = array();
+	$url_parts    = explode( '?', $pagenum_link );
+
+	if ( isset( $url_parts[1] ) ) {
+		wp_parse_str( $url_parts[1], $query_args );
+	}
+
+	$pagenum_link = remove_query_arg( array_keys( $query_args ), $pagenum_link );
+	$pagenum_link = trailingslashit( $pagenum_link ) . '%_%';
+
+	$format  = $wp_rewrite->using_index_permalinks() && ! strpos( $pagenum_link, 'index.php' ) ? 'index.php/' : '';
+	$format .= $wp_rewrite->using_permalinks() ? user_trailingslashit( 'page/%#%', 'paged' ) : '?paged=%#%';
+
+	// Set up paginated links.
+	$links = paginate_links( array(
+		'base'      => $pagenum_link,
+		'format'    => $format,
+		'total'     => $wp_query->max_num_pages,
+		'current'   => $paged,
+		'mid_size'  => 1,
+		'add_args'  => array_map( 'urlencode', $query_args ),
+		'prev_text' => __( '&larr; Prev', 'bueno' ),
+		'next_text' => __( 'Next &rarr;', 'bueno' ),
+		'type'      => 'list'
+	) );
+
+	if ( $links ) {
+
+	?>
+	<div class="page_nav_wrap">
+		<div class="post_nav">
+			<?php echo $links; ?>
+		</div><!-- .pagination -->
+	</div><!-- .navigation -->
+	<?php
+	}
 }
 
 /*-----------------------------------------------------------------------------------*/

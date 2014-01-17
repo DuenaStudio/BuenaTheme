@@ -46,7 +46,7 @@
 					if (has_excerpt()) {
 						the_excerpt();
 					} else {
-						echo bueno_string_limit_words($excerpt,20);
+						echo apply_filters( 'the_excerpt', bueno_string_limit_words($excerpt,20) );
 					}
 				?>
 				</div>
